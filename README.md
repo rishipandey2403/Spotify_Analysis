@@ -70,10 +70,48 @@ In advanced stages, the focus shifts to improving query performance. Some optimi
 
 ### Easy Level
 1. Retrieve the names of all tracks that have more than 1 billion streams.
+    ```
+    sql
+    select
+	track
+    from spotify
+    where stream >= 1000000000
+   ```
 2. List all albums along with their respective artists.
+   ```
+   sql
+   SELECT
+	album,
+	artist
+    FROM spotify
+    group by 1,2
+   ```
 3. Get the total number of comments for tracks where `licensed = TRUE`.
+ ```
+    sql
+    SELECT 
+	sum(comments) as total_comments
+FROM spotify
+WHERE (spotify.licensed = true)
+```
 4. Find all tracks that belong to the album type `single`.
+   ```
+   sql
+       SELECT
+	track
+    FROM spotify
+    where spotify.album_type = 'single'
+   ```
 5. Count the total number of tracks by each artist.
+   ```
+     sql
+       SELECT
+	artist,
+	count(track) as count_of_Tracks
+    from spotify
+    group by 1
+    order by 2 desc
+   ```
 
 ### Medium Level
 1. Calculate the average danceability of tracks in each album.
