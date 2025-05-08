@@ -78,7 +78,7 @@ In advanced stages, the focus shifts to improving query performance. Some optimi
    ```
 2. List all albums along with their respective artists.
    ```sql
-   SELECT
+    SELECT
 	album,
 	artist
     FROM spotify
@@ -88,24 +88,24 @@ In advanced stages, the focus shifts to improving query performance. Some optimi
  ```sql
     SELECT 
 	sum(comments) as total_comments
-FROM spotify
-WHERE (spotify.licensed = true)
+    FROM spotify
+    WHERE (spotify.licensed = true)
 ```
 4. Find all tracks that belong to the album type `single`.
    ```sql
-       SELECT
+   SELECT
 	track
-    FROM spotify
-    where spotify.album_type = 'single'
+    	FROM spotify
+   where spotify.album_type = 'single'
    ```
 5. Count the total number of tracks by each artist.
    ```sql
-       SELECT
+   SELECT
 	artist,
 	count(track) as count_of_Tracks
-    from spotify
-    group by 1
-    order by 2 desc
+   from spotify
+   group by 1
+   order by 2 desc
    ```
 
 ### Medium Level
