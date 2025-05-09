@@ -110,15 +110,105 @@ In advanced stages, the focus shifts to improving query performance. Some optimi
 
 ### Medium Level
 1. Calculate the average danceability of tracks in each album.
+   ```sql
+   select 
+	album,
+	avg(danceability) as Average_Danceability
+   from spotify
+   group by 1
+   order by 2 DESC
+   ```
 2. Find the top 5 tracks with the highest energy values.
+   ```sql
+   SELECT 
+	track,
+	energy_rank
+   from
+   (SELECT	
+	track,
+	energy,
+	dense_rank() over(order by energy DESC) as energy_rank
+    FROM spotify) as t1
+    where energy_rank <=5
+   ```
 3. List all tracks along with their views and likes where `official_video = TRUE`.
+   ```sql
+   SELECT
+	track,
+	sum(views) as total_views,
+	sum(likes) as total_likes
+   from spotify
+   where official_video = true
+   group by 1
+   ```
 4. For each album, calculate the total views of all associated tracks.
+   ```sql
+   SELECT 
+	album,
+	track,
+	sum(views) as total_views
+   from spotify
+   group by 1,2
+   order by 1,3
+   ```
 5. Retrieve the track names that have been streamed on Spotify more than YouTube.
+   ```sql
+   select 
+	*
+   from
+    (select 
+	track,
+	coalesce(sum(case when most_played_on='Spotify' then stream end),0) as spotify_stream,
+	coalesce(sum(case when most_played_on='Youtube' then stream end),0) as youtube_stream
+   from spotify
+   group by 1) as t1
+   where spotify_stream>youtube_stream
+   and youtube_stream <>0
+   ```
 
 ### Advanced Level
 1. Find the top 3 most-viewed tracks for each artist using window functions.
+   ```sql
+   select
+	artist,
+	track,
+	track_rank
+   from
+    (select 
+	artist,
+	track,
+	dense_rank() over(partition by artist order by sum(views) DESC) as track_rank
+    from spotify
+    group by 1,2
+    order by 3) as t1
+   where track_rank <= 3
+   group by 1,2,3
+   order by 1,3
+   ```
 2. Write a query to find tracks where the liveness score is above the average.
+   ```sql
+   select 
+	track,
+	liveness
+   from spotify
+   where liveness > (select avg(liveness) from spotify)
+   order by 2 desc
+   ```
 3. **Use a `WITH` clause to calculate the difference between the highest and lowest energy values for tracks in each album.*
+   ```sql
+   with cte as
+	(select
+		album,
+		max(energy) as maximum_energy,
+		min(energy) as minimum_energy
+	from spotify
+	group by 1)
+   select 
+	album,
+	maximum_energy - minimum_energy as energy_difference
+   FROM cte
+   order by 2 desc
+   ```
 
 updated section for  **Spotify Advanced SQL Project and Query Optimization** README, focusing on the query optimization task performed.
 
